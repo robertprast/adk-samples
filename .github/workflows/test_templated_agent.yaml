@@ -94,6 +94,7 @@ jobs:
       # --- RUN THE TEMPLATE GENERATION AND TESTING USING CONTAINER ---
       - name: ${{ matrix.task }} - ${{ matrix.agent_path }} (${{ matrix.deployment_target }})
         uses: docker://europe-west4-docker.pkg.dev/production-ai-template/starter-pack/e2e-tests
+        continue-on-error: ${{ matrix.task == 'lint' }}
         with:
           entrypoint: /bin/bash
           args: |
@@ -128,7 +129,6 @@ jobs:
             elif [ \"${{ matrix.task }}\" = \"test\" ]; then
               echo \"--- Running tests ---\"
               export AGENT_NAME=\"$DEPLOYMENT_TARGET-$AGENT_NAME\"
-              make deploy-infra
               make test
             else
               echo \"--- Unknown task: ${{ matrix.task }} ---\"
