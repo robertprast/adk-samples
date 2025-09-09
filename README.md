@@ -33,6 +33,7 @@ To learn more, check out the [ADK Documentation](https://google.github.io/adk-do
 │   │   ├── financial-advisor
 │   │   ├── fomc-research
 │   │   ├── gemini-fullstack
+│   │   ├── google-trends-agent
 │   │   ├── image-scoring
 │   │   ├── llm-auditor
 │   │   ├── machine-learning-engineering

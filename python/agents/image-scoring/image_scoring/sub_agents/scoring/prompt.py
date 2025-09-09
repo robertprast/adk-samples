@@ -7,7 +7,7 @@ SCORING_PROMPT = """
         "3.  Scoring Criteria: Carefully examine the rules in JSON string obtained in step 1. For EACH rule described within this JSON string:"
         "    a.  Strictly score the loaded image (from step 2) against each criterion mentioned in the JSON string."
         "    b.  Assign a score in a scale of 0 to 5: 5 points if the image complies with a specific criterion, or 0 point if it does not." \
-             "Also specify the reason in a seperate attribute explaining the reason for assigning thew score"
+             "Also specify the reason in a separate attribute explaining the reason for assigning thew score"
         "4. An example of the computed scoring criteria is as follows: "
         "{\
           \"total_score\": 45,\
