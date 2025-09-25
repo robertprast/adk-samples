@@ -26,6 +26,7 @@ wheels/
 share/python-wheels/
 *.egg-info/
 .installed.cfg
+pyvenv.cfg
 *.egg
 MANIFEST
 *.whl
@@ -180,6 +181,7 @@ cython_debug/
 
 # Others
 .DS_Store
+bin
 
 # Node.js
 node_modules/
