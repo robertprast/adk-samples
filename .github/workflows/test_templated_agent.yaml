@@ -130,6 +130,18 @@ jobs:
               echo \"--- Running tests ---\"
               export AGENT_NAME=\"$DEPLOYMENT_TARGET-$AGENT_NAME\"
               make test
+              
+              echo \"--- Starting backend ---\"
+              make backend &
+              BACKEND_PID=$!
+              
+              echo \"--- Waiting 10 seconds ---\"
+              sleep 10
+              
+              echo \"--- Stopping backend and all child processes ---\"
+              kill -TERM -$BACKEND_PID 2>/dev/null || true
+              sleep 2
+              kill -KILL -$BACKEND_PID 2>/dev/null || true
             else
               echo \"--- Unknown task: ${{ matrix.task }} ---\"
               exit 1
