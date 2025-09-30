@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 from google import genai
 from google.genai import types
 from google.adk.tools import ToolContext
@@ -7,7 +8,7 @@ from .... import config
 
 
 client = genai.Client(
-    vertexai=True
+    vertexai=True, project=os.environ.get("GOOGLE_CLOUD_PROJECT"),location="global"
 )
 
 
@@ -16,7 +17,7 @@ async def generate_images(imagen_prompt: str, tool_context: ToolContext):
     try:
 
         response = client.models.generate_images(
-            model="imagen-3.0-generate-002",
+            model=config.IMAGEN_MODEL,
             prompt=imagen_prompt,
             config=types.GenerateImagesConfig(
                 number_of_images=1,

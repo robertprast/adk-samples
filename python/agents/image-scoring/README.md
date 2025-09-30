@@ -35,14 +35,14 @@ This diagram shows the detailed architecture of the agents and tools used to imp
 
 1.  **Prerequisites**
 
-    *   Python 3.11+
-    *   Poetry
+    *   Python 3.10+
+    *   uv
         *   For dependency management and packaging. Please follow the
             instructions on the official
-            [Poetry website](https://python-poetry.org/docs/) for installation.
+            [uv website](https://docs.astral.sh/uv/) for installation.
 
         ```bash
-        pip install poetry
+        curl -LsSf https://astral.sh/uv/install.sh | sh
         ```
 
     * A project on Google Cloud Platform
@@ -57,10 +57,7 @@ This diagram shows the detailed architecture of the agents and tools used to imp
     git clone https://github.com/google/adk-samples.git
     cd adk-samples/python/agents/image-scoring
     # Install the package and dependencies.
-    # Note for Linux users: If you get an error related to `keyring` during the installation, you can disable it by running the following command:
-    # poetry config keyring.enabled false
-    # This is a one-time setup.
-    poetry install --with deployment
+    uv sync --dev
     ```
 
 3.  **Configuration**
@@ -107,55 +104,43 @@ a chatbot interface will appear on the right. The conversation is initially
 blank. 
 
 
-## Deployment
+### Using Agent Starter Pack
 
-The Image Scoring Agent can be deployed to Vertex AI Agent Engine using the following
-commands:
-
-```bash
-poetry install --with deployment
-poetry run python3 deployment/deploy.py --create
-```
-
-When the deployment finishes, it will print a line like this:
-
-```
-Created remote agent: projects/<PROJECT_NUMBER>/locations/<PROJECT_LOCATION>/reasoningEngines/<AGENT_ENGINE_ID>
-```
-
-If you forgot the AGENT_ENGINE_ID, you can list existing agents using:
+You can also use the [Agent Starter Pack](https://goo.gle/agent-starter-pack) to create a production-ready version of this agent with additional deployment options:
 
 ```bash
-poetry run python3 deployment/deploy.py --list
+# Create and activate a virtual environment
+python -m venv .venv && source .venv/bin/activate # On Windows: .venv\Scripts\activate
+
+# Install the starter pack and create your project
+pip install --upgrade agent-starter-pack
+agent-starter-pack create my-image-scorer -a adk@image-scoring
 ```
 
-To test your deployed agent in Agent Engine, you can run the below test deployment test script.
-First, replace `<AGENT_ENGINE_ID>` in the .env post the deployment.
+<details>
+<summary>⚡️ Alternative: Using uv</summary>
 
+If you have [`uv`](https://github.com/astral-sh/uv) installed, you can create and set up your project with a single command:
 ```bash
-python3 deployment/test_deployment.py
+uvx agent-starter-pack create my-image-scorer -a adk@image-scoring
 ```
+This command handles creating the project without needing to pre-install the package into a virtual environment.
 
-To delete the deployed agent, you may run the following command:
-
-```bash
-export AGENT_ENGINE_ID=<AGENT_ENGINE_ID>
-poetry run python3 deployment/deploy.py --delete --resource_id=${AGENT_ENGINE_ID}
-```
+</details>
 
 ## Evaluating the Deployment
 
 For running evaluation, install the extra dependencies:
 
 ```bash
-poetry install --with dev
+uv sync --dev
 ```
 
 Then the tests and evaluation can be run from the `image_scoring` directory using
 the `pytest` module:
 
 ```bash
-poetry run pytest eval
+uv run pytest eval
 ```
 
 `eval` is a demonstration of how to evaluate the agent, using the
