@@ -1,0 +1,107 @@
+version: 2
+updates:
+  # Python agents with uv.lock files
+  - package-ecosystem: "pip"
+    directory: "/python/agents/blog-writer"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "02:00"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "python"
+
+  - package-ecosystem: "pip"
+    directory: "/python/agents/data-science"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "02:00"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "python"
+
+  - package-ecosystem: "pip"
+    directory: "/python/agents/gemini-fullstack"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "02:00"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "python"
+
+  - package-ecosystem: "pip"
+    directory: "/python/agents/image-scoring"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "02:00"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "python"
+
+  - package-ecosystem: "pip"
+    directory: "/python/agents/medical-pre-authorization"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "02:00"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "python"
+
+  - package-ecosystem: "pip"
+    directory: "/python/agents/realtime-conversational-agent/server"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "02:00"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "python"
+
+  - package-ecosystem: "pip"
+    directory: "/python/agents/software-bug-assistant"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "02:00"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "python"
+
+  # Keep GitHub Actions up to date
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "02:00"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "github-actions"
