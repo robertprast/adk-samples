@@ -17,8 +17,8 @@ requires-python = ">=3.10,<3.13"
 
 [dependency-groups]
 dev = [
-    "pytest~=8.3.2",
-    "pytest-asyncio~=0.23.7",
+    "pytest~=8.4.2",
+    "pytest-asyncio~=1.2.0",
     "nest-asyncio>=1.6.0",
     "agent-starter-pack>=0.14.1",
 ]
@@ -26,15 +26,15 @@ dev = [
 [project.optional-dependencies]
 
 jupyter = [
-    "jupyter~=1.0.0",
+    "jupyter~=1.1.1",
 ]
 
 lint = [
     "ruff>=0.4.6",
-    "mypy~=1.15.0",
-    "codespell~=2.2.0",
+    "mypy~=1.18.2",
+    "codespell~=2.4.1",
     "types-pyyaml~=6.0.12.20240917",
-    "types-requests~=2.32.0.20240914",
+    "types-requests~=2.32.4.20250913",
 ]
 
 [tool.ruff]
