@@ -13,6 +13,10 @@ updates:
     labels:
       - "dependencies"
       - "python"
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
 
   - package-ecosystem: "pip"
     directory: "/python/agents/data-science"
@@ -26,6 +30,10 @@ updates:
     labels:
       - "dependencies"
       - "python"
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
 
   - package-ecosystem: "pip"
     directory: "/python/agents/gemini-fullstack"
@@ -39,6 +47,10 @@ updates:
     labels:
       - "dependencies"
       - "python"
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
 
   - package-ecosystem: "pip"
     directory: "/python/agents/image-scoring"
@@ -52,6 +64,10 @@ updates:
     labels:
       - "dependencies"
       - "python"
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
 
   - package-ecosystem: "pip"
     directory: "/python/agents/medical-pre-authorization"
@@ -65,6 +81,10 @@ updates:
     labels:
       - "dependencies"
       - "python"
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
 
   - package-ecosystem: "pip"
     directory: "/python/agents/realtime-conversational-agent/server"
@@ -78,6 +98,10 @@ updates:
     labels:
       - "dependencies"
       - "python"
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
 
   - package-ecosystem: "pip"
     directory: "/python/agents/software-bug-assistant"
@@ -91,6 +115,10 @@ updates:
     labels:
       - "dependencies"
       - "python"
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
 
   # Keep GitHub Actions up to date
   - package-ecosystem: "github-actions"
@@ -105,3 +133,7 @@ updates:
     labels:
       - "dependencies"
       - "github-actions"
+    groups:
+      all-actions:
+        patterns:
+          - "*"
