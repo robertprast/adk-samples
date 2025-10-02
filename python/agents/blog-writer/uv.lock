@@ -27,7 +27,7 @@ wheels = [
 
 [[package]]
 name = "agent-starter-pack"
-version = "0.15.5"
+version = "0.15.7"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "backoff" },
@@ -38,9 +38,9 @@ dependencies = [
     { name = "rich" },
     { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/36/f1/64938f34050b62623ffec3461ddfc90482d659991f27b92446f4ab9e9e12/agent_starter_pack-0.15.5.tar.gz", hash = "sha256:dd3ffd312bb98e610f438ae14e66b8c3404cee6fa3c5b126c3f06676140ef2d2", size = 10956924, upload-time = "2025-10-01T16:32:40.66Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0a/09/b82756b82066e245615ce6bf7e70f8d7961964038209ed58332130c85fe7/agent_starter_pack-0.15.7.tar.gz", hash = "sha256:785e8dc9918144509d3725b1f7f7c39ec4db3df00987ecf564caab0f8164005c", size = 10956916, upload-time = "2025-10-02T11:29:56.432Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/56/65/4c1cc6c953a3989ef387d864f8a5ff876b5748359850d25703f7e81003b4/agent_starter_pack-0.15.5-py3-none-any.whl", hash = "sha256:7145467cea78f07dc07dadc754256485f67c37d42642cae2c69d7dd535a572a4", size = 3003477, upload-time = "2025-10-01T16:32:36.636Z" },
+    { url = "https://files.pythonhosted.org/packages/e4/95/d1b4fdbb8e6254680238a5a8bb8b5b3c4b01b512d4c86af5e7344eb2b71f/agent_starter_pack-0.15.7-py3-none-any.whl", hash = "sha256:07288700152690cafc01ba986f20347414c7706013385bd4b0993bee66107af7", size = 3003442, upload-time = "2025-10-02T11:29:52.836Z" },
 ]
 
 [[package]]
@@ -1100,7 +1100,7 @@ wheels = [
 
 [[package]]
 name = "google-genai"
-version = "1.39.1"
+version = "1.40.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -1112,9 +1112,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "websockets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f4/3e/25b88bda07ca237043f1be45d13c49ffbc73f9edf45d3232345802f67197/google_genai-1.39.1.tar.gz", hash = "sha256:4721704b43d170fc3f1b1cb5494bee1a7f7aae20de3a5383cdf6a129139df80b", size = 244631, upload-time = "2025-09-26T20:56:19.5Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/1b/68/bbd94059cf56b1be06000ef52abc1981b0f6cd4160bf566680a7e04f8c8b/google_genai-1.40.0.tar.gz", hash = "sha256:7af5730c6f0166862309778fedb2d881ef34f3dc25e912eb891ca00c8481eb20", size = 245021, upload-time = "2025-10-01T23:39:02.304Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/cb/c3/12c1f386184d2fcd694b73adeabc3714a5ed65c01cc183b4e3727a26b9d1/google_genai-1.39.1-py3-none-any.whl", hash = "sha256:6ca36c7e40db6fcba7049dfdd102c86da326804f34403bd7d90fa613a45e5a78", size = 244681, upload-time = "2025-09-26T20:56:17.527Z" },
+    { url = "https://files.pythonhosted.org/packages/78/fb/404719f847a7a2339279c5aacb33575af6fbf8dc94e0c758d98bb2146e0c/google_genai-1.40.0-py3-none-any.whl", hash = "sha256:366806aac66751ed0698b51fd0fb81fe2e3fa68988458c53f90a2a887df8f656", size = 245087, upload-time = "2025-10-01T23:39:00.317Z" },
 ]
 
 [[package]]
