@@ -62,7 +62,7 @@ def setup_before_agent_call(callback_context: CallbackContext):
 
 
 root_agent = Agent(
-    model=os.getenv("ROOT_AGENT_MODEL"),
+    model=os.getenv("ROOT_AGENT_MODEL", "gemini-2.5-flash"),
     name="db_ds_multiagent",
     instruction=return_instructions_root(),
     global_instruction=(
