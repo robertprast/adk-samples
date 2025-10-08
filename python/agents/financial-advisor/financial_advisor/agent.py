@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Financial coordinator: provide reasonable investment strategies"""
+"""Financial coordinator: provide reasonable investment strategies."""
 
 from google.adk.agents import LlmAgent
 from google.adk.tools.agent_tool import AgentTool
@@ -22,6 +22,7 @@ from .sub_agents.data_analyst import data_analyst_agent
 from .sub_agents.execution_analyst import execution_analyst_agent
 from .sub_agents.risk_analyst import risk_analyst_agent
 from .sub_agents.trading_analyst import trading_analyst_agent
+
 
 MODEL = "gemini-2.5-pro"
 
