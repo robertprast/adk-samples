@@ -49,3 +49,6 @@
 
 # Time Series Forecasting
 /java/agents/time-series-forecasting/ @kweinmeister
+
+# Short movie agents
+/python/agents/short-movie-agents @rsamborski
