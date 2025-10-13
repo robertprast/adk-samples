@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from .alloydb.agent import alloydb_agent
+from .analytics.agent import analytics_agent
+from .bigquery.agent import bigquery_agent
 from .bqml.agent import root_agent as bqml_agent
-from .analytics.agent import root_agent as ds_agent
-from .bigquery.agent import database_agent as db_agent
 
-
-__all__ = ["bqml_agent", "ds_agent", "db_agent"]
+__all__ = ["bqml_agent", "analytics_agent", "bigquery_agent", "alloydb_agent"]

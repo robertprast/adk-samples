@@ -288,9 +288,7 @@ def main(argv: list[str]) -> None:  # pylint: disable=unused-argument
     except Exception as e:
         print(f"\nAn unexpected error occurred: {e}")
         # Log the full traceback for debugging purposes
-        logger.exception(
-            "Unhandled exception in main:"
-        )
+        logger.exception("Unhandled exception in main:")
 
 
 if __name__ == "__main__":
