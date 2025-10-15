@@ -107,7 +107,7 @@ jobs:
             AGENT_NAME=$(basename \"$TEMPLATE_PATH\")
             DEPLOYMENT_TARGET=\"${{ matrix.deployment_target }}\"
             # Use shorter prefix and truncate if needed to stay under 26 chars
-            TRUNCATED_NAME=$(echo \"$AGENT_NAME\" | cut -c1-21)
+            TRUNCATED_NAME=$(echo \"$AGENT_NAME\" | cut -c1-21 | tr '[:upper:]' '[:lower:]' | tr '_' '-')
             AGENT_GENERATED_NAME=\"test-$TRUNCATED_NAME\"
             
             echo \"--- Testing template: $TEMPLATE_PATH with deployment target: $DEPLOYMENT_TARGET ---\"
