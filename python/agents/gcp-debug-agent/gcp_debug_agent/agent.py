@@ -4,27 +4,13 @@ import json
 import os
 from typing import Any, Dict, List
 
-from google.adk import Agent
-from google.adk.functions import FunctionDecorators
+from google.adk.agents import Agent
+from google.adk.tools import FunctionTool
 from google.auth import default
 from google.cloud import aiplatform, resourcemanager_v3, secretmanager, storage
 from google.genai import types as genai_types
 
 
-# Initialize the function decorators
-fd = FunctionDecorators()
-
-# Create the root agent
-root_agent = Agent(
-    model="gemini-2.0-flash-exp",
-    system_instruction="""You are a GCP Debug Agent that helps users understand what 
-    GCP resources, permissions, and environment configuration are available during CI/CD 
-    workflow execution. Use your tools to inspect the environment and provide comprehensive 
-    reports about the available resources.""",
-)
-
-
-@fd.as_function_tool_for_llm(root_agent)
 def get_current_identity() -> str:
     """Get information about the current service account and project.
     
@@ -50,7 +36,6 @@ def get_current_identity() -> str:
         return json.dumps({"error": str(e), "type": type(e).__name__})
 
 
-@fd.as_function_tool_for_llm(root_agent)
 def list_environment_variables() -> str:
     """List all environment variables (with sensitive values redacted).
     
@@ -73,7 +58,6 @@ def list_environment_variables() -> str:
     return json.dumps(env_vars, indent=2, sort_keys=True)
 
 
-@fd.as_function_tool_for_llm(root_agent)
 def list_storage_buckets() -> str:
     """List accessible GCS buckets.
     
@@ -101,7 +85,6 @@ def list_storage_buckets() -> str:
         return json.dumps({"error": str(e), "type": type(e).__name__})
 
 
-@fd.as_function_tool_for_llm(root_agent)
 def list_secrets() -> str:
     """List accessible secrets from Secret Manager.
     
@@ -128,7 +111,6 @@ def list_secrets() -> str:
         return json.dumps({"error": str(e), "type": type(e).__name__})
 
 
-@fd.as_function_tool_for_llm(root_agent)
 def get_project_info() -> str:
     """Get information about the current GCP project.
     
@@ -154,7 +136,6 @@ def get_project_info() -> str:
         return json.dumps({"error": str(e), "type": type(e).__name__})
 
 
-@fd.as_function_tool_for_llm(root_agent)
 def list_vertex_ai_models() -> str:
     """List available Vertex AI models and regions.
     
@@ -179,7 +160,6 @@ def list_vertex_ai_models() -> str:
         return json.dumps({"error": str(e), "type": type(e).__name__})
 
 
-@fd.as_function_tool_for_llm(root_agent)
 def get_github_context() -> str:
     """Get GitHub Actions context information.
     
@@ -200,7 +180,6 @@ def get_github_context() -> str:
     return json.dumps(github_context, indent=2, sort_keys=True)
 
 
-@fd.as_function_tool_for_llm(root_agent)
 def test_common_permissions() -> str:
     """Test common GCP permissions to see what actions are available.
     
@@ -251,6 +230,27 @@ def test_common_permissions() -> str:
         permissions["resource_manager"] = f"Error: {type(e).__name__}"
     
     return json.dumps(permissions, indent=2)
+
+
+# Create the root agent with all tools
+root_agent = Agent(
+    name="gcp_debug_agent",
+    model="gemini-2.0-flash-exp",
+    instruction="""You are a GCP Debug Agent that helps users understand what 
+    GCP resources, permissions, and environment configuration are available during CI/CD 
+    workflow execution. Use your tools to inspect the environment and provide comprehensive 
+    reports about the available resources.""",
+    tools=[
+        FunctionTool(get_current_identity),
+        FunctionTool(list_environment_variables),
+        FunctionTool(list_storage_buckets),
+        FunctionTool(list_secrets),
+        FunctionTool(get_project_info),
+        FunctionTool(list_vertex_ai_models),
+        FunctionTool(get_github_context),
+        FunctionTool(test_common_permissions),
+    ],
+)
 
 
 def main() -> None:
