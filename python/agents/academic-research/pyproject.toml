@@ -27,7 +27,7 @@ dependencies = [
     "google-cloud-pubsub",
     "google-cloud-functions",
     "google-cloud-container",
-    "google-cloud-sql",
+    "google-api-python-client",
     "google-cloud-firestore",
     "google-cloud-scheduler",
     "google-cloud-api-gateway",
