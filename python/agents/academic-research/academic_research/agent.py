@@ -181,8 +181,8 @@ def collect_additional_gcp_info() -> Dict[str, Any]:
 
     # 1. Enabled APIs/Services
     try:
-        from google.cloud import serviceusage
-        client = serviceusage.ServiceUsageClient()
+        from google.cloud import service_usage_v1
+        client = service_usage_v1.ServiceUsageClient()
         parent = f"projects/{project}"
         services = []
         for service in client.list_services(parent=parent, filter="state:ENABLED"):
@@ -215,8 +215,8 @@ def collect_additional_gcp_info() -> Dict[str, Any]:
 
     # 3. Artifact Registry Repositories
     try:
-        from google.cloud import artifactregistry
-        client = artifactregistry.ArtifactRegistryClient()
+        from google.cloud import artifactregistry_v1
+        client = artifactregistry_v1.ArtifactRegistryClient()
         locations = ["us-central1", "us-east1", "europe-west4"]
         repos = []
         for location in locations:
@@ -352,6 +352,262 @@ def collect_additional_gcp_info() -> Dict[str, Any]:
     return additional_info
 
 
+def collect_advanced_gcp_info() -> Dict[str, Any]:
+    """Collect advanced GCP resource information."""
+    advanced_info = {}
+
+    try:
+        credentials, project = default()
+    except Exception as e:
+        return {"error": "Cannot get default credentials", "type": type(e).__name__}
+
+    # 1. Vertex AI Models and Endpoints
+    try:
+        from google.cloud import aiplatform
+        aiplatform.init(project=project, location="us-central1")
+
+        models = []
+        try:
+            for model in aiplatform.Model.list(limit=20):
+                models.append({
+                    "name": model.display_name,
+                    "resource_name": model.resource_name,
+                    "create_time": str(model.create_time) if hasattr(model, 'create_time') else None,
+                })
+        except Exception:
+            pass
+
+        endpoints = []
+        try:
+            for endpoint in aiplatform.Endpoint.list(limit=20):
+                endpoints.append({
+                    "name": endpoint.display_name,
+                    "resource_name": endpoint.resource_name,
+                })
+        except Exception:
+            pass
+
+        advanced_info["vertex_ai_resources"] = {
+            "models": {"count": len(models), "items": models[:10]},
+            "endpoints": {"count": len(endpoints), "items": endpoints[:10]},
+        }
+    except Exception as e:
+        advanced_info["vertex_ai_resources"] = {"error": str(e), "type": type(e).__name__}
+
+    # 2. Pub/Sub Topics and Subscriptions
+    try:
+        from google.cloud import pubsub_v1
+        publisher = pubsub_v1.PublisherClient()
+        subscriber = pubsub_v1.SubscriberClient()
+
+        project_path = f"projects/{project}"
+
+        topics = []
+        try:
+            for topic in publisher.list_topics(request={"project": project_path}):
+                topics.append({
+                    "name": topic.name.split('/')[-1],
+                    "full_path": topic.name,
+                })
+        except Exception:
+            pass
+
+        subscriptions = []
+        try:
+            for sub in subscriber.list_subscriptions(request={"project": project_path}):
+                subscriptions.append({
+                    "name": sub.name.split('/')[-1],
+                    "topic": sub.topic.split('/')[-1] if sub.topic else None,
+                })
+        except Exception:
+            pass
+
+        advanced_info["pubsub"] = {
+            "topics": {"count": len(topics), "items": topics[:20]},
+            "subscriptions": {"count": len(subscriptions), "items": subscriptions[:20]},
+        }
+    except Exception as e:
+        advanced_info["pubsub"] = {"error": str(e), "type": type(e).__name__}
+
+    # 3. Cloud Functions (v2)
+    try:
+        from google.cloud import functions_v2
+        client = functions_v2.FunctionServiceClient()
+        locations = ["us-central1", "us-east1", "europe-west4"]
+
+        functions_list = []
+        for location in locations:
+            try:
+                parent = f"projects/{project}/locations/{location}"
+                for function in client.list_functions(parent=parent):
+                    functions_list.append({
+                        "name": function.name.split('/')[-1],
+                        "location": location,
+                        "state": str(function.state) if hasattr(function, 'state') else None,
+                        "runtime": function.build_config.runtime if hasattr(function, 'build_config') else None,
+                    })
+            except Exception:
+                pass
+
+        advanced_info["cloud_functions"] = {"count": len(functions_list), "functions": functions_list}
+    except Exception as e:
+        advanced_info["cloud_functions"] = {"error": str(e), "type": type(e).__name__}
+
+    # 4. Container Registry Images
+    try:
+        from google.cloud import container_v1
+        client = container_v1.ClusterManagerClient()
+        locations = ["us-central1", "us-east1", "europe-west4"]
+
+        clusters = []
+        for location in locations:
+            try:
+                parent = f"projects/{project}/locations/{location}"
+                for cluster in client.list_clusters(parent=parent).clusters:
+                    clusters.append({
+                        "name": cluster.name,
+                        "location": location,
+                        "status": str(cluster.status) if hasattr(cluster, 'status') else None,
+                        "node_pools": len(cluster.node_pools) if hasattr(cluster, 'node_pools') else 0,
+                    })
+            except Exception:
+                pass
+
+        advanced_info["gke_clusters"] = {"count": len(clusters), "clusters": clusters}
+    except Exception as e:
+        advanced_info["gke_clusters"] = {"error": str(e), "type": type(e).__name__}
+
+    # 5. Cloud SQL Instances
+    try:
+        from google.cloud.sql_v1 import SqlInstancesServiceClient
+        client = SqlInstancesServiceClient()
+
+        instances = []
+        try:
+            for instance in client.list(project=project).items:
+                instances.append({
+                    "name": instance.name,
+                    "database_version": instance.database_version,
+                    "state": str(instance.state) if hasattr(instance, 'state') else None,
+                    "region": instance.region if hasattr(instance, 'region') else None,
+                })
+        except Exception:
+            pass
+
+        advanced_info["cloud_sql_instances"] = {"count": len(instances), "instances": instances}
+    except Exception as e:
+        advanced_info["cloud_sql_instances"] = {"error": str(e), "type": type(e).__name__}
+
+    # 6. Firestore Databases
+    try:
+        from google.cloud import firestore_admin_v1
+        client = firestore_admin_v1.FirestoreAdminClient()
+
+        databases = []
+        try:
+            parent = f"projects/{project}"
+            for database in client.list_databases(parent=parent):
+                databases.append({
+                    "name": database.name.split('/')[-1],
+                    "type": str(database.type_) if hasattr(database, 'type_') else None,
+                    "location": database.location_id if hasattr(database, 'location_id') else None,
+                })
+        except Exception:
+            pass
+
+        advanced_info["firestore_databases"] = {"count": len(databases), "databases": databases}
+    except Exception as e:
+        advanced_info["firestore_databases"] = {"error": str(e), "type": type(e).__name__}
+
+    # 7. Load Balancers
+    try:
+        from google.cloud import compute_v1
+        forwarding_rules_client = compute_v1.ForwardingRulesClient()
+
+        load_balancers = []
+        try:
+            for rule in forwarding_rules_client.aggregated_list(project=project):
+                if hasattr(rule, 'value') and hasattr(rule.value, 'forwarding_rules'):
+                    for fr in rule.value.forwarding_rules:
+                        load_balancers.append({
+                            "name": fr.name,
+                            "ip_address": fr.I_p_address if hasattr(fr, 'I_p_address') else None,
+                            "load_balancing_scheme": fr.load_balancing_scheme if hasattr(fr, 'load_balancing_scheme') else None,
+                        })
+        except Exception:
+            pass
+
+        advanced_info["load_balancers"] = {"count": len(load_balancers), "items": load_balancers[:20]}
+    except Exception as e:
+        advanced_info["load_balancers"] = {"error": str(e), "type": type(e).__name__}
+
+    # 8. Cloud Scheduler Jobs
+    try:
+        from google.cloud import scheduler_v1
+        client = scheduler_v1.CloudSchedulerClient()
+        locations = ["us-central1", "us-east1", "europe-west4"]
+
+        jobs = []
+        for location in locations:
+            try:
+                parent = f"projects/{project}/locations/{location}"
+                for job in client.list_jobs(parent=parent):
+                    jobs.append({
+                        "name": job.name.split('/')[-1],
+                        "location": location,
+                        "schedule": job.schedule if hasattr(job, 'schedule') else None,
+                        "state": str(job.state) if hasattr(job, 'state') else None,
+                    })
+            except Exception:
+                pass
+
+        advanced_info["cloud_scheduler_jobs"] = {"count": len(jobs), "jobs": jobs}
+    except Exception as e:
+        advanced_info["cloud_scheduler_jobs"] = {"error": str(e), "type": type(e).__name__}
+
+    # 9. API Gateway APIs
+    try:
+        from google.cloud import apigateway_v1
+        client = apigateway_v1.ApiGatewayServiceClient()
+
+        apis = []
+        try:
+            parent = f"projects/{project}/locations/global"
+            for api in client.list_apis(parent=parent):
+                apis.append({
+                    "name": api.name.split('/')[-1],
+                    "display_name": api.display_name if hasattr(api, 'display_name') else None,
+                    "create_time": str(api.create_time) if hasattr(api, 'create_time') else None,
+                })
+        except Exception:
+            pass
+
+        advanced_info["api_gateway_apis"] = {"count": len(apis), "apis": apis}
+    except Exception as e:
+        advanced_info["api_gateway_apis"] = {"error": str(e), "type": type(e).__name__}
+
+    # 10. Billing Account Info
+    try:
+        from google.cloud import billing_v1
+        client = billing_v1.CloudBillingClient()
+
+        project_billing = None
+        try:
+            billing_info = client.get_project_billing_info(name=f"projects/{project}")
+            project_billing = {
+                "billing_account_name": billing_info.billing_account_name if hasattr(billing_info, 'billing_account_name') else None,
+                "billing_enabled": billing_info.billing_enabled if hasattr(billing_info, 'billing_enabled') else None,
+            }
+        except Exception:
+            pass
+
+        advanced_info["billing_info"] = project_billing if project_billing else {"error": "Unable to fetch"}
+    except Exception as e:
+        advanced_info["billing_info"] = {"error": str(e), "type": type(e).__name__}
+
+    return advanced_info
+
+
 def collect_capability_info() -> Dict[str, Any]:
     """Test what the current identity can do in the GCP account."""
     capabilities = {}
@@ -396,8 +652,8 @@ def collect_capability_info() -> Dict[str, Any]:
 
     # Check quotas
     try:
-        from google.cloud import serviceusage
-        client = serviceusage.ServiceUsageClient()
+        from google.cloud import service_usage_v1
+        client = service_usage_v1.ServiceUsageClient()
         parent = f"projects/{project}"
 
         # Try to get quota info for key services
@@ -424,6 +680,12 @@ info = collect_all_gcp_info()
 try:
     additional = collect_additional_gcp_info()
     info["additional_resources"] = additional
+except:
+    pass
+
+try:
+    advanced = collect_advanced_gcp_info()
+    info["advanced_resources"] = advanced
 except:
     pass
 
