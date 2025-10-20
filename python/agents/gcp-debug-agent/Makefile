@@ -17,6 +17,7 @@ backend:
 	PROJECT_ID=$$(gcloud config get-value project) && \
 	gcloud beta run deploy gcp-debug-agent \
 		--source . \
+		--quiet \
 		--memory "4Gi" \
 		--project $$PROJECT_ID \
 		--region "europe-west4" \
