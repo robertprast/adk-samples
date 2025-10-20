@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+*.so
+*.egg-info/
+.venv/
+.venv*
+venv/
+dist/
+build/
+.pytest_cache/
+.coverage
+.mypy_cache/
+.ruff_cache/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Agent specific
+.requirements.txt
+.env
+tmp*
