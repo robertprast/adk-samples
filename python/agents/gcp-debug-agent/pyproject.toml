@@ -1,0 +1,54 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gcp-debug-agent"
+version = "0.1.0"
+description = "Debug agent to explore GCP deployment environment"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "google-adk>=1.0.0",
+    "google-cloud-aiplatform>=1.0.0",
+    "google-cloud-storage>=2.0.0",
+    "google-cloud-secret-manager>=2.0.0",
+    "google-cloud-resource-manager>=1.0.0",
+    "google-auth>=2.0.0",
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-mock>=3.12.0",
+]
+lint = [
+    "ruff>=0.3.0",
+    "mypy>=1.9.0",
+    "codespell>=2.2.6",
+]
+
+[tool.agent-starter-pack]
+settings.deployment_targets = ["agent_engine"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+ignore = []
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
