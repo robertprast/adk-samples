@@ -27,6 +27,9 @@ deployment = [
 ]
 
 [project.optional-dependencies]
+streamlit = [
+    "streamlit>=1.30.0",
+]
 lint = [
     "ruff>=0.4.6",
     "mypy~=1.18.2",
