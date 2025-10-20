@@ -70,14 +70,10 @@ def collect_all_gcp_info() -> Dict[str, Any]:
     except Exception as e:
         debug_info["identity"] = {"error": str(e), "type": type(e).__name__}
 
-    # 2. Environment Variables (redacted)
-    sensitive_keys = ["TOKEN", "SECRET", "PASSWORD", "KEY", "CREDENTIAL", "AUTH", "API_KEY", "PRIVATE"]
+    # 2. Environment Variables
     env_vars = {}
     for key, value in os.environ.items():
-        if any(sensitive in key.upper() for sensitive in sensitive_keys):
-            env_vars[key] = "***REDACTED***"
-        else:
-            env_vars[key] = value
+        env_vars[key] = value
     debug_info["environment"] = env_vars
 
     # 3. Storage Buckets
