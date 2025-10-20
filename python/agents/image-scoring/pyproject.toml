@@ -25,7 +25,9 @@ dev = [
 ]
 
 [project.optional-dependencies]
-
+streamlit = [
+    "streamlit>=1.30.0",
+]
 jupyter = [
     "jupyter~=1.1.1",
 ]
