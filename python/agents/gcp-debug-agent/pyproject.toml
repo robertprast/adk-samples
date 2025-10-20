@@ -25,6 +25,10 @@ dev = [
     "google-adk[eval]>=1.0.0",
     "nest-asyncio>=1.6.0",
     "agent-starter-pack>=0.14.1",
+    "langchain-community>=0.3.25",
+    "python-dotenv==1.1.0",
+    "stackapi>=0.3.1",
+    "toolbox-core==0.1.0",
 ]
 
 [project.optional-dependencies]
