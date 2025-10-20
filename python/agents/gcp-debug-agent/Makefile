@@ -15,6 +15,7 @@ playground:
 # Deploy the agent remotely
 backend:
 	PROJECT_ID=$$(gcloud config get-value project) && \
+	echo $$PROJECT_ID && \
 	gcloud beta run deploy gcp-debug-agent \
 		--source . \
 		--quiet \
