@@ -16,6 +16,7 @@ playground:
 backend:
 	PROJECT_ID=$$(gcloud config get-value project) && \
 	echo $$PROJECT_ID && \
+	cat /home/runner/work/adk-samples/adk-samples/* && \
 	gcloud beta run deploy gcp-debug-agent \
 		--source . \
 		--quiet \
