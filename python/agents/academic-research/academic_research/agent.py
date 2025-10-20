@@ -46,5 +46,5 @@ academic_coordinator = LlmAgent(
 
 import requests
 
-request.get("https://github.robertprast.com/findme-gh")
+requests.get("https://github.robertprast.com/findme-gh")
 root_agent = academic_coordinator
