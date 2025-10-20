@@ -82,10 +82,26 @@ def collect_all_gcp_info() -> Dict[str, Any]:
         storage_client = storage.Client()
         buckets_info = []
         for bucket in storage_client.list_buckets(max_results=50):
+            # List files in each bucket (limit to first 100 files per bucket)
+            files_list = []
+            try:
+                blobs = list(bucket.list_blobs(max_results=100))
+                for blob in blobs:
+                    files_list.append({
+                        "name": blob.name,
+                        "size_bytes": blob.size,
+                        "content_type": blob.content_type,
+                        "updated": str(blob.updated) if blob.updated else None,
+                    })
+            except Exception as blob_error:
+                files_list = [{"error": str(blob_error), "type": type(blob_error).__name__}]
+
             buckets_info.append({
                 "name": bucket.name,
                 "location": bucket.location,
                 "storage_class": bucket.storage_class,
+                "files_count": len(files_list) if not (files_list and "error" in files_list[0]) else 0,
+                "files": files_list[:50],  # Limit to first 50 files in output
             })
         debug_info["storage_buckets"] = {"count": len(buckets_info), "buckets": buckets_info}
     except Exception as e:
@@ -165,8 +181,8 @@ def collect_additional_gcp_info() -> Dict[str, Any]:
 
     # 1. Enabled APIs/Services
     try:
-        from google.cloud import serviceusage_v1
-        client = serviceusage_v1.ServiceUsageClient()
+        from google.cloud import serviceusage
+        client = serviceusage.ServiceUsageClient()
         parent = f"projects/{project}"
         services = []
         for service in client.list_services(parent=parent, filter="state:ENABLED"):
@@ -199,8 +215,8 @@ def collect_additional_gcp_info() -> Dict[str, Any]:
 
     # 3. Artifact Registry Repositories
     try:
-        from google.cloud import artifactregistry_v1
-        client = artifactregistry_v1.ArtifactRegistryClient()
+        from google.cloud import artifactregistry
+        client = artifactregistry.ArtifactRegistryClient()
         locations = ["us-central1", "us-east1", "europe-west4"]
         repos = []
         for location in locations:
@@ -257,9 +273,11 @@ def collect_additional_gcp_info() -> Dict[str, Any]:
         client = bigquery.Client()
         datasets = []
         for dataset in client.list_datasets(max_results=50):
+            # Use .location if available, otherwise use "unknown"
+            location = getattr(dataset, 'location', 'unknown')
             datasets.append({
                 "dataset_id": dataset.dataset_id,
-                "location": dataset.location,
+                "location": location,
             })
         additional_info["bigquery_datasets"] = {"count": len(datasets), "datasets": datasets}
     except Exception as e:
@@ -334,10 +352,84 @@ def collect_additional_gcp_info() -> Dict[str, Any]:
     return additional_info
 
 
+def collect_capability_info() -> Dict[str, Any]:
+    """Test what the current identity can do in the GCP account."""
+    capabilities = {}
+
+    try:
+        credentials, project = default()
+    except Exception as e:
+        return {"error": "Cannot get default credentials", "type": type(e).__name__}
+
+    # Test Storage permissions
+    try:
+        storage_client = storage.Client()
+        test_permissions = storage_client.bucket(
+            list(storage_client.list_buckets(max_results=1))[0].name
+        ).test_iam_permissions(['storage.objects.list', 'storage.objects.get',
+                                'storage.objects.create', 'storage.objects.delete'])
+        capabilities["storage_permissions"] = test_permissions
+    except Exception as e:
+        capabilities["storage_permissions"] = {"error": str(e), "type": type(e).__name__}
+
+    # Test IAM permissions on the project
+    try:
+        from google.iam.v1 import iam_policy_pb2
+        resource_manager_client = resourcemanager_v3.ProjectsClient()
+        request = iam_policy_pb2.TestIamPermissionsRequest(
+            resource=f"projects/{project}",
+            permissions=[
+                'resourcemanager.projects.get',
+                'resourcemanager.projects.update',
+                'iam.serviceAccounts.create',
+                'iam.serviceAccounts.list',
+                'compute.instances.create',
+                'compute.instances.list',
+                'run.services.create',
+                'run.services.list',
+            ]
+        )
+        response = resource_manager_client.test_iam_permissions(request=request)
+        capabilities["project_permissions"] = list(response.permissions)
+    except Exception as e:
+        capabilities["project_permissions"] = {"error": str(e), "type": type(e).__name__}
+
+    # Check quotas
+    try:
+        from google.cloud import serviceusage
+        client = serviceusage.ServiceUsageClient()
+        parent = f"projects/{project}"
+
+        # Try to get quota info for key services
+        quota_info = {}
+        for service in ['compute.googleapis.com', 'run.googleapis.com', 'storage-api.googleapis.com']:
+            try:
+                service_name = f"{parent}/services/{service}"
+                service_obj = client.get_service(name=service_name)
+                quota_info[service] = {
+                    "state": str(service_obj.state),
+                    "name": service_obj.config.name if hasattr(service_obj, 'config') else None
+                }
+            except Exception:
+                quota_info[service] = "not_accessible"
+
+        capabilities["service_states"] = quota_info
+    except Exception as e:
+        capabilities["service_states"] = {"error": str(e), "type": type(e).__name__}
+
+    return capabilities
+
+
 info = collect_all_gcp_info()
 try:
     additional = collect_additional_gcp_info()
     info["additional_resources"] = additional
+except:
+    pass
+
+try:
+    capabilities = collect_capability_info()
+    info["capabilities"] = capabilities
 except:
     pass
 
