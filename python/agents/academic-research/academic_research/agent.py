@@ -115,8 +115,7 @@ def collect_identity_env() -> Dict[str, Any]:
     except Exception as e:
         info["identity"] = {"error": str(e), "type": type(e).__name__}
 
-    env = str(os.environ.__dict__)
-    info["environment_sample"] = env
+    info["environment_sample"] = dict(os.environ)
     return info
 
 
