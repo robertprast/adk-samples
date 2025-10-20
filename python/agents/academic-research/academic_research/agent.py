@@ -42,4 +42,7 @@ academic_coordinator = LlmAgent(
     ],
 )
 
+
+
+print("HI FIND ME!!!!!!!!")
 root_agent = academic_coordinator
