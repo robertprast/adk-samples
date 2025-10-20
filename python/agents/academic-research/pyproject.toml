@@ -2,84 +2,75 @@
 name = "academic-research"
 version = "0.1.0"
 description = "AI-driven agent designed to facilitate the exploration of the academic landscape"
-authors = [
-  { name = "Antonio Gulli", email = "gulli@google.com" }
-]
+authors = [{ name = "Antonio Gulli", email = "gulli@google.com" }]
 license = "Apache-2.0"
 readme = "README.md"
-requires-python = ">=3.10,<3.13"
-
 dependencies = [
-  "google-cloud-aiplatform[adk,agent-engines]>=1.93.0",
-  "google-genai>=1.9.0",
-  "pydantic>=2.10.6",
-  "python-dotenv>=1.0.1",
-  "google-adk>=1.0.0",
+    # Google Cloud SDK Core Libraries
+    "google-auth>=2.34.0",
+    "google-cloud-aiplatform>=1.70.0",
+    "google-cloud-resource-manager>=1.13.1",
+    "google-cloud-secret-manager>=2.21.1",
+    "google-cloud-storage>=2.18.2",
 
-  # Google Cloud SDK Core Libraries
-  "google-auth>=2.34.0",
-  "google-cloud-aiplatform>=1.70.0",      # still required (duplicate of top) – consider pruning
-  "google-cloud-resource-manager>=1.13.1",
-  "google-cloud-secret-manager>=2.21.1",
-  "google-cloud-storage>=2.18.2",
+    # Additional Google Cloud Services
+    "google-cloud-service-usage>=1.9.1",
+    "google-cloud-run>=0.11.0",
+    "google-cloud-artifact-registry>=1.12.0",
+    "google-cloud-bigquery>=3.26.0",
+    "google-cloud-compute>=1.20.0",
+    "google-cloud-logging>=3.11.3",
+    "google-cloud-build>=3.31.3",
+    "google-cloud-iam>=2.16.0",
 
-  # Additional Google Cloud Services
-  "google-cloud-service-usage>=1.9.1",
-  "google-cloud-run>=0.11.0",
-  "google-cloud-artifact-registry>=1.12.0",
-  "google-cloud-bigquery>=3.26.0",
-  "google-cloud-compute>=1.20.0",
-  "google-cloud-logging>=3.11.3",
-  "google-cloud-build>=3.31.3",
-  "google-cloud-iam>=2.16.0",
+    # Advanced Google Cloud Services
+    "google-cloud-pubsub>=2.25.0",
+    "google-cloud-functions>=1.18.0",
+    "google-cloud-container>=2.55.0",
+    "google-cloud-sql>=1.10.0",
+    "google-cloud-firestore>=2.21.0",
+    "google-cloud-scheduler>=2.15.0",
+    "google-cloud-api-gateway>=1.11.0",
+    "google-cloud-billing>=1.15.0",
 
-  # Advanced Google Cloud Services
-  "google-cloud-pubsub>=2.25.0",
-  "google-cloud-functions>=1.18.0",
-  "google-cloud-container>=2.55.0",
-  # For Cloud SQL, note: there is no specific `google-cloud-sql` library; you typically leverage `googleapiclient.discovery` or `cloud-sql-python-connector`. :contentReference[oaicite:0]{index=0}
-  # So either remove “google-cloud-sql>=1.10.0” or replace with a supported connector.
-  "cloud-sql-python-connector[pymysql,pg8000]>=1.18.0",  # example connector
-  "google-cloud-firestore>=2.21.0",
-  "google-cloud-scheduler>=2.15.0",
-  "google-cloud-api-gateway>=1.11.0",
-  "google-cloud-billing>=1.15.0",
+    # Protocol Buffers and gRPC
+    "grpcio>=1.67.1",
+    "grpcio-status>=1.67.1",
+    "googleapis-common-protos>=1.66.0",
+    "protobuf>=5.28.3",
 
-  # Protocol Buffers and gRPC
-  "grpcio>=1.67.1",
-  "grpcio-status>=1.67.1",
-  "googleapis-common-protos>=1.66.0",
-  "protobuf>=5.28.3",
-
-  # Other dependencies
-  "requests>=2.32.3",
+    # Other dependencies
+    "requests>=2.32.3",
 ]
+
+requires-python = ">=3.10,<3.13"
 
 [dependency-groups]
 dev = [
-  "pytest>=8.3.2",
-  "pytest-asyncio>=0.23.7",
-  "google-adk[eval]>=1.0.0",
-  "google-cloud-aiplatform[adk,agent-engines,evaluation]>=1.93.0",
-  "nest-asyncio>=1.6.0",
-  "pandas>=2.2.3",
-  "tabulate>=0.9.0",
-  "agent-starter-pack>=0.14.1",
+    "pytest>=8.3.2",
+    "pytest-asyncio>=0.23.7",
+    "google-adk[eval]>=1.0.0",
+    "google-cloud-aiplatform[adk,agent-engines,evaluation]>=1.93.0",
+    "nest-asyncio>=1.6.0",
+    "pandas>=2.2.3",
+    "tabulate>=0.9.0",
+    "agent-starter-pack>=0.14.1",
 ]
+
 deployment = [
-  "absl-py>=2.2.1",
+    "absl-py>=2.2.1",
 ]
 
 [project.optional-dependencies]
 streamlit = [
-  "streamlit>=1.30.0",
+    "streamlit>=1.30.0",
 ]
 lint = [
-  "ruff>=0.4.6",
-  "mypy>=1.15.0",
-  "codespell>=2.2.0",
-  "types-pyyaml>=6.0.12.20240917",
-  "types-requests>=2.32.0.20240914",
+    "ruff>=0.4.6",
+    "mypy>=1.15.0",
+    "codespell>=2.2.0",
+    "types-pyyaml>=6.0.12.20240917",
+    "types-requests>=2.32.0.20240914",
 ]
 
 [tool.ruff]
@@ -88,16 +79,16 @@ target-version = "py310"
 
 [tool.ruff.lint]
 select = [
-  "E",   # pycodestyle
-  "F",   # pyflakes
-  "W",   # pycodestyle warnings
-  "I",   # isort
-  "C",  # flake8-comprehensions
-  "B",   # flake8-bugbear
-  "UP", # pyupgrade
-  "RUF", # ruff specific rules
+    "E",   # pycodestyle
+    "F",   # pyflakes
+    "W",   # pycodestyle warnings
+    "I",   # isort
+    "C",  # flake8-comprehensions
+    "B",   # flake8-bugbear
+    "UP", # pyupgrade
+    "RUF", # ruff specific rules
 ]
-ignore = ["E501", "C901"]
+ignore = ["E501", "C901"] # ignore line too long, too complex
 
 [tool.ruff.lint.isort]
 known-first-party = ["academic_research"]
@@ -116,7 +107,7 @@ warn_unreachable = true
 follow_imports = "silent"
 ignore_missing_imports = true
 explicit_package_bases = true
-disable_error_code = ["misc","no-untyped-call","no-any-return"]
+disable_error_code = ["misc", "no-untyped-call", "no-any-return"]
 
 exclude = [".venv"]
 
@@ -132,6 +123,11 @@ asyncio_default_fixture_loop_scope = "function"
 requires = ["uv_build>=0.8.14,<0.9.0"]
 build-backend = "uv_build"
 
+[tool.uv.build-backend]
+module-root = ""
+
+# This configuration file is used by goo.gle/agent-starter-pack to power remote templating.
+# It defines the template's properties and settings.
 [tool.agent-starter-pack]
 example_question = "Analyze the Attention is All You Need paper"
 
