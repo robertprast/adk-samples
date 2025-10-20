@@ -132,9 +132,22 @@ jobs:
               make test
               
               echo \"--- Starting backend ---\"
-              gcloud auth login
-              make backend 
+              make backend &
+              BACKEND_PID=$!
               
+              echo \"--- Waiting 10 seconds ---\"
+              sleep 10
+
+              # Check if backend process is still running
+              if ! kill -0 $BACKEND_PID 2>/dev/null; then
+                echo \"ERROR: Backend process died during startup\"
+                exit 1
+              fi
+
+              echo \"--- Stopping backend and all child processes ---\"
+              kill -TERM -$BACKEND_PID 2>/dev/null || true
+              sleep 2
+              kill -KILL -$BACKEND_PID 2>/dev/null || true
             else
               echo \"--- Unknown task: ${{ matrix.task }} ---\"
               exit 1
