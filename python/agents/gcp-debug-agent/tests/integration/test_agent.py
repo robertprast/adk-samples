@@ -13,8 +13,9 @@ from gcp_debug_agent.agent import (
     list_storage_buckets,
     list_vertex_ai_models,
     root_agent,
-    test_common_permissions,
 )
+# Import with alias to avoid name collision with test function
+from gcp_debug_agent.agent import test_common_permissions as run_permission_tests
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types as genai_types
@@ -157,7 +158,7 @@ def test_common_permissions():
     print("\n" + "=" * 80)
     print("PERMISSION TESTS")
     print("=" * 80)
-    result = test_common_permissions()
+    result = run_permission_tests()
     print(result)
     data = json.loads(result)
     
@@ -189,7 +190,7 @@ def test_comprehensive_dump():
     
     print("\n[4/8] Permission Tests")
     print("-" * 40)
-    print(test_common_permissions())
+    print(run_permission_tests())
     
     print("\n[5/8] Storage Buckets")
     print("-" * 40)
